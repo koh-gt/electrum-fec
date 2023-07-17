@@ -132,7 +132,7 @@ info "installing pip."
 break_legacy_easy_install
 
 
-info "preparing electrum-ltc-locale."
+info "preparing electrum-fec-locale."
 (
     cd "$PROJECT_ROOT"
     git submodule update --init
@@ -178,8 +178,8 @@ cp "/usr/lib/x86_64-linux-gnu/libzbar.so.0" "$APPDIR/usr/lib/libzbar.so.0"
 
 
 info "desktop integration."
-cp "$PROJECT_ROOT/electrum-fec.desktop" "$APPDIR/electrum-ltc.desktop"
-cp "$PROJECT_ROOT/electrum_fec/gui/icons/electrum-ltc.png" "$APPDIR/electrum-ltc.png"
+cp "$PROJECT_ROOT/electrum-fec.desktop" "$APPDIR/electrum-fec.desktop"
+cp "$PROJECT_ROOT/electrum_fec/gui/icons/electrum-fec.png" "$APPDIR/electrum-fec.png"
 
 
 # add launcher
