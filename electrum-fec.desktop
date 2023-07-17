@@ -1,0 +1,22 @@
+# If you want Electrum to appear in a Linux app launcher ("start menu"), install this by doing:
+# sudo desktop-file-install electrum-fec.desktop
+
+[Desktop Entry]
+Comment=Lightweight Ferrite Client
+Exec=sh -c "PATH=\"\\$HOME/.local/bin:\\$PATH\"; electrum-fec %u"
+GenericName[en_US]=Ferrite Wallet
+GenericName=Ferrite Wallet
+Icon=electrum-fec
+Name[en_US]=Electrum Ferrite Wallet
+Name=Electrum Ferrite Wallet
+Categories=Finance;Network;
+StartupNotify=true
+StartupWMClass=electrum-fec
+Terminal=false
+Type=Application
+MimeType=x-scheme-handler/ferrite;
+Actions=Testnet;
+
+[Desktop Action Testnet]
+Exec=sh -c "PATH=\"\\$HOME/.local/bin:\\$PATH\"; electrum-fec --testnet %u"
+Name=Testnet mode
