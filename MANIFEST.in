@@ -1,6 +1,6 @@
 include LICENCE RELEASE-NOTES AUTHORS
 include README.md
-include electrum-ltc.desktop
+include electrum-fec.desktop
 include *.py
 include run_electrum
 recursive-include packages *.py
@@ -10,14 +10,14 @@ include contrib/requirements/requirements*.txt
 include contrib/deterministic-build/requirements*.txt
 include contrib/*.sh
 
-graft electrum_ltc
-prune electrum_ltc/tests
+graft electrum_fec
+prune electrum_fec/tests
 graft contrib/udev
 
-exclude electrum_ltc/*.so
-exclude electrum_ltc/*.so.0
-exclude electrum_ltc/*.dll
-exclude electrum_ltc/*.dylib
+exclude electrum_fec/*.so
+exclude electrum_fec/*.so.0
+exclude electrum_fec/*.dll
+exclude electrum_fec/*.dylib
 
 global-exclude __pycache__
 global-exclude *.py[co~]
