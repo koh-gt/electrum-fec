@@ -65,9 +65,9 @@ If you would like hardware wallet support,
 ### Running from tar.gz
 
 If you downloaded the official package (tar.gz), you can run
-Electrum-LTC from its root directory without installing it on your
+Electrum-FEC from its root directory without installing it on your
 system; all the pure python dependencies are included in the 'packages'
-directory. To run Electrum-LTC from its root directory, just do:
+directory. To run Electrum-FEC from its root directory, just do:
 ```
 $ ./run_electrum
 ```
@@ -80,7 +80,7 @@ $ python3 -m pip install --user .
 
 This will download and install the Python dependencies used by
 Electrum-FEC instead of using the 'packages' directory.
-It will also place an executable named `electrum-ltc` in `~/.local/bin`,
+It will also place an executable named `electrum-fec` in `~/.local/bin`,
 so make sure that is on your `PATH` variable.
 
 
