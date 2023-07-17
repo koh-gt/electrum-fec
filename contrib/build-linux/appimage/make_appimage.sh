@@ -7,7 +7,7 @@ CONTRIB="$PROJECT_ROOT/contrib"
 CONTRIB_APPIMAGE="$CONTRIB/build-linux/appimage"
 DISTDIR="$PROJECT_ROOT/dist"
 BUILDDIR="$CONTRIB_APPIMAGE/build/appimage"
-APPDIR="$BUILDDIR/electrum-ltc.AppDir"
+APPDIR="$BUILDDIR/electrum-fec.AppDir"
 CACHEDIR="$CONTRIB_APPIMAGE/.cache/appimage"
 export DLL_TARGET_DIR="$CACHEDIR/dlls"
 PIP_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/pip_cache"
@@ -20,7 +20,7 @@ PY_VER_MAJOR="3.9"  # as it appears in fs paths
 PKG2APPIMAGE_COMMIT="a9c85b7e61a3a883f4a35c41c5decb5af88b6b5d"
 
 VERSION=$(git describe --tags --dirty --always)
-APPIMAGE="$DISTDIR/electrum-ltc-$VERSION-x86_64.AppImage"
+APPIMAGE="$DISTDIR/electrum-fec-$VERSION-x86_64.AppImage"
 
 . "$CONTRIB"/build_tools_util.sh
 
@@ -137,10 +137,10 @@ info "preparing electrum-ltc-locale."
     cd "$PROJECT_ROOT"
     git submodule update --init
 
-    LOCALE="$PROJECT_ROOT/electrum_ltc/locale/"
+    LOCALE="$PROJECT_ROOT/electrum_fec/locale/"
     # we want the binary to have only compiled (.mo) locale files; not source (.po) files
     rm -rf "$LOCALE"
-    "$CONTRIB/build_locale.sh" "$CONTRIB/deterministic-build/electrum-ltc-locale/locale/" "$LOCALE"
+    "$CONTRIB/build_locale.sh" "$CONTRIB/deterministic-build/electrum-fec-locale/locale/" "$LOCALE"
 )
 
 
@@ -178,8 +178,8 @@ cp "/usr/lib/x86_64-linux-gnu/libzbar.so.0" "$APPDIR/usr/lib/libzbar.so.0"
 
 
 info "desktop integration."
-cp "$PROJECT_ROOT/electrum-ltc.desktop" "$APPDIR/electrum-ltc.desktop"
-cp "$PROJECT_ROOT/electrum_ltc/gui/icons/electrum-ltc.png" "$APPDIR/electrum-ltc.png"
+cp "$PROJECT_ROOT/electrum-fec.desktop" "$APPDIR/electrum-ltc.desktop"
+cp "$PROJECT_ROOT/electrum_fec/gui/icons/electrum-ltc.png" "$APPDIR/electrum-ltc.png"
 
 
 # add launcher
