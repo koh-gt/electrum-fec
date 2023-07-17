@@ -43,7 +43,7 @@ if TYPE_CHECKING:
 
 COINBASE_MATURITY = 100
 COIN = 100000000
-TOTAL_COIN_SUPPLY_LIMIT_IN_BTC = 84000000
+TOTAL_COIN_SUPPLY_LIMIT_IN_BTC = 60221400
 
 NLOCKTIME_MIN = 0
 NLOCKTIME_BLOCKHEIGHT_MAX = 500_000_000 - 1
@@ -643,10 +643,10 @@ def DecodeBase58Check(psz: Union[bytes, str]) -> bytes:
 # extended WIF for segwit (used in 3.0.x; but still used internally)
 # the keys in this dict should be a superset of what Imported Wallets can import
 WIF_SCRIPT_TYPES = {
-    'p2pkh':48,
+    'p2pkh':36,
     'p2wpkh':1,
     'p2wpkh-p2sh':2,
-    'p2sh':50,
+    'p2sh':35,
     'p2wsh':6,
     'p2wsh-p2sh':7
 }
