@@ -1,4 +1,4 @@
-# Electrum-LTC - Lightweight Litecoin client
+# Electrum-FEC - Lightweight Ferrite client
 
 ```
 Licence: MIT Licence
@@ -11,10 +11,10 @@ Homepage: https://electrum-ltc.org/
 
 ## Getting started
 
-_(If you've come here looking to simply run Electrum-LTC,
+_(If you've come here looking to simply run Electrum-FEC,
 [you may download it here](https://electrum-ltc.org/#download).)_
 
-Electrum-LTC itself is pure Python, and so are most of the required dependencies,
+Electrum-FEC itself is pure Python, and so are most of the required dependencies,
 but not everything. The following sections describe how to run from source, but here
 is a TL;DR:
 
@@ -72,14 +72,14 @@ directory. To run Electrum-LTC from its root directory, just do:
 $ ./run_electrum
 ```
 
-You can also install Electrum-LTC on your system, by running this command:
+You can also install Electrum-FEC on your system, by running this command:
 ```
 $ sudo apt-get install python3-setuptools python3-pip
 $ python3 -m pip install --user .
 ```
 
 This will download and install the Python dependencies used by
-Electrum-LTC instead of using the 'packages' directory.
+Electrum-FEC instead of using the 'packages' directory.
 It will also place an executable named `electrum-ltc` in `~/.local/bin`,
 so make sure that is on your `PATH` variable.
 
