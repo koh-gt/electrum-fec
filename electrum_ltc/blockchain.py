@@ -44,10 +44,11 @@ except ImportError:
 _logger = get_logger(__name__)
 
 HEADER_SIZE = 80  # bytes
-
-# see https://github.com/bitcoin/bitcoin/blob/feedb9c84e72e4fff489810a2bbeec09bcda5763/src/chainparams.cpp#L76
-MAX_TARGET = 0x00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-
+MAX_TARGET = 0x00000FFFFF000000000000000000000000000000000000000000000000000000
+DGW_PAST_BLOCKS = 24
+POW_DGW3_HEIGHT = 250000
+#POW_TARGET_SPACING = int(2.5 * 60)
+POW_TARGET_SPACING = 60
 
 class MissingHeader(Exception):
     pass
@@ -175,12 +176,19 @@ _CHAINWORK_CACHE = {
 def init_headers_file_for_best_chain():
     b = get_best_chain()
     filename = b.path()
+    len_checkpoints = len(constants.net.CHECKPOINTS)
     length = HEADER_SIZE * len(constants.net.CHECKPOINTS) * 2016
     if not os.path.exists(filename) or os.path.getsize(filename) < length:
         with open(filename, 'wb') as f:
-            if length > 0:
-                f.seek(length - 1)
-                f.write(b'\x00')
+            #if length > 0:
+            #    f.seek(length - 1)
+            #    f.write(b'\x00')
+            for i in range(len_checkpoints):
+                # this will depend on new checkpoints file
+                for height, header_data in b.checkpoints[i][2]:
+                    f.seek(height*80)
+                    bin_header = util.bfh(header_data)
+                    f.write(bin_header)
         util.ensure_sparse_file(filename)
     with b.lock:
         b.update_size()
@@ -312,6 +320,11 @@ class Blockchain(Logger):
             raise Exception("prev hash mismatch: %s vs %s" % (prev_hash, header.get('prev_block_hash')))
         if constants.net.TESTNET:
             return
+
+        height = header.get('block_height')
+        if height < POW_DGW3_HEIGHT:
+            return
+
         bits = cls.target_to_bits(target)
         if bits != header.get('bits'):
             raise Exception("bits mismatch: %s vs %s" % (bits, header.get('bits')))
@@ -323,7 +336,8 @@ class Blockchain(Logger):
         num = len(data) // HEADER_SIZE
         start_height = index * 2016
         prev_hash = self.get_hash(start_height - 1)
-        target = self.get_target(index-1)
+        chunk_headers = {'empty': True}
+
         for i in range(num):
             height = start_height + i
             try:
@@ -331,8 +345,16 @@ class Blockchain(Logger):
             except MissingHeader:
                 expected_header_hash = None
             raw_header = data[i*HEADER_SIZE : (i+1)*HEADER_SIZE]
-            header = deserialize_header(raw_header, index*2016 + i)
+            height = index * 2016 + i
+            header = deserialize_header(raw_header, height)
+            target = self.get_target(height, chunk_headers)
             self.verify_header(header, prev_hash, target, expected_header_hash)
+
+            chunk_headers[height] = header
+            if i == 0:
+                chunk_headers['min_height'] = height
+                chunk_headers['empty'] = False
+            chunk_headers['max_height'] = height
             prev_hash = hash_header(header)
 
     @with_lock
@@ -518,7 +540,8 @@ class Blockchain(Logger):
             return constants.net.GENESIS
         elif is_height_checkpoint():
             index = height // 2016
-            h, t, _ = self.checkpoints[index]
+            #h, t, _ = self.checkpoints[index]
+            h, t, extra_headers = self.checkpoints[index]
             return h
         else:
             header = self.read_header(height)
@@ -533,65 +556,78 @@ class Blockchain(Logger):
             return ts
         return self.read_header(height).get('timestamp')
 
-    def get_target(self, index: int) -> int:
-        # compute target from chunk x, used in chunk x+1
-        if constants.net.TESTNET:
-            return 0
-        if index == -1:
-            return 0x00000FFFF0000000000000000000000000000000000000000000000000000000
-        if index < len(self.checkpoints):
-            h, t, _ = self.checkpoints[index]
-            return t
-        # new target
-        # Litecoin: go back the full period unless it's the first retarget
-        first_timestamp = self.get_timestamp(index * 2016 - 1 if index > 0 else 0)
-        last = self.read_header(index * 2016 + 2015)
-        if not first_timestamp or not last:
-            raise MissingHeader()
-        bits = last.get('bits')
-        target = self.bits_to_target(bits)
-        nActualTimespan = last.get('timestamp') - first_timestamp
-        nTargetTimespan = 84 * 60 * 60
-        nActualTimespan = max(nActualTimespan, nTargetTimespan // 4)
-        nActualTimespan = min(nActualTimespan, nTargetTimespan * 4)
-        new_target = min(MAX_TARGET, (target * nActualTimespan) // nTargetTimespan)
-        # not any target can be represented in 32 bits:
+    def get_target(self, height: int, chunk_headers: Optional[dict]=None) -> int:
+        # TODO: check height to use different target algo so clients can sync from beggining
+        # Do we need to do this?
+
+        if chunk_headers is None:
+            chunk_headers = {'empty': True}
+        if height >= POW_DGW3_HEIGHT:
+            return self.get_target_dgw_v3(height, chunk_headers)
+        else:
+            return MAX_TARGET
+
+    def get_target_dgw_v3(self, height: int, chunk_headers: Optional[dict]) -> int:
+        if chunk_headers['empty']:
+            chunk_empty = True
+        else:
+            chunk_empty = False
+            min_height = chunk_headers['min_height']
+            max_height = chunk_headers['max_height']
+
+        count_blocks = 1
+        while count_blocks <= DGW_PAST_BLOCKS:
+            reading_h = height - count_blocks
+            reading_header = self.read_header(reading_h)
+            if not reading_header and not chunk_empty and min_height <= reading_h <= max_height:
+                reading_header = chunk_headers[reading_h]
+            if not reading_header:
+                raise MissingHeader()
+            reading_time = reading_header.get('timestamp')
+            reading_target = self.bits_to_target(reading_header.get('bits'))
+
+            if count_blocks == 1:
+                past_target_avg = reading_target
+                last_time = reading_time
+            past_target_avg = (past_target_avg * count_blocks + reading_target) // (count_blocks + 1)
+
+            count_blocks += 1
+
+        new_target = past_target_avg
+        actual_timespan = last_time - reading_time
+        target_timespan = DGW_PAST_BLOCKS * POW_TARGET_SPACING
+
+        if actual_timespan < target_timespan // 3:
+            actual_timespan = target_timespan // 3
+        if actual_timespan > target_timespan * 3:
+            actual_timespan = target_timespan * 3
+
+        new_target *= actual_timespan
+        new_target //= target_timespan
+
+        if new_target > MAX_TARGET:
+            return MAX_TARGET
+
         new_target = self.bits_to_target(self.target_to_bits(new_target))
         return new_target
 
+
     @classmethod
     def bits_to_target(cls, bits: int) -> int:
-        # arith_uint256::SetCompact in Bitcoin Core
-        if not (0 <= bits < (1 << 32)):
-            raise Exception(f"bits should be uint32. got {bits!r}")
         bitsN = (bits >> 24) & 0xff
-        bitsBase = bits & 0x7fffff
-        if bitsN <= 3:
-            target = bitsBase >> (8 * (3-bitsN))
-        else:
-            target = bitsBase << (8 * (bitsN-3))
-        if target != 0 and bits & 0x800000 != 0:
-            # Bit number 24 (0x800000) represents the sign of N
-            raise Exception("target cannot be negative")
-        if (target != 0 and
-                (bitsN > 34 or
-                 (bitsN > 33 and bitsBase > 0xff) or
-                 (bitsN > 32 and bitsBase > 0xffff))):
-            raise Exception("target has overflown")
-        return target
+        if not (0x03 <= bitsN <= 0x1e):
+            raise Exception("First part of bits should be in [0x03, 0x1e]")
+        bitsBase = bits & 0xffffff
+        if not (0x8000 <= bitsBase <= 0x7fffff):
+            raise Exception("Second part of bits should be in [0x8000, 0x7fffff]")
+        return bitsBase << (8 * (bitsN-3))
 
     @classmethod
     def target_to_bits(cls, target: int) -> int:
-        # arith_uint256::GetCompact in Bitcoin Core
-        # see https://github.com/bitcoin/bitcoin/blob/7fcf53f7b4524572d1d0c9a5fdc388e87eb02416/src/arith_uint256.cpp#L223
-        c = target.to_bytes(length=32, byteorder='big')
-        bitsN = len(c)
-        while bitsN > 0 and c[0] == 0:
-            c = c[1:]
-            bitsN -= 1
-            if len(c) < 3:
-                c += b'\x00'
-        bitsBase = int.from_bytes(c[:3], byteorder='big')
+        c = ("%064x" % target)[2:]
+        while c[:2] == '00' and len(c) > 6:
+            c = c[2:]
+        bitsN, bitsBase = len(c) // 2, int.from_bytes(bfh(c[:6]), byteorder='big')
         if bitsBase >= 0x800000:
             bitsN += 1
             bitsBase >>= 8
@@ -600,6 +636,8 @@ class Blockchain(Logger):
     def chainwork_of_header_at_height(self, height: int) -> int:
         """work done by single header at given height"""
         chunk_idx = height // 2016 - 1
+        #chunk_idx = height
+
         target = self.get_target(chunk_idx)
         work = ((2 ** 256 - target - 1) // (target + 1)) + 1
         return work
@@ -641,12 +679,13 @@ class Blockchain(Logger):
             return hash_header(header) == constants.net.GENESIS
         try:
             prev_hash = self.get_hash(height - 1)
-        except:
+        except Exception as e:
+            print(e)
             return False
         if prev_hash != header.get('prev_block_hash'):
             return False
         try:
-            target = self.get_target(height // 2016 - 1)
+            target = self.get_target(height)
         except MissingHeader:
             return False
         try:
@@ -671,11 +710,22 @@ class Blockchain(Logger):
         cp = []
         n = self.height() // 2016
         for index in range(n):
-            h = self.get_hash((index+1) * 2016 -1)
-            target = self.get_target(index)
-            # Litecoin: also store the timestamp of the last block
-            tstamp = self.get_timestamp((index+1) * 2016 - 1)
-            cp.append((h, target, tstamp))
+            height = (index + 1) * 2016 -1
+            h = self.get_hash(height)
+            target = self.get_target(height)
+            if len(h.strip('0')) == 0:
+                raise Exception('%s file has not enough data.' % self.path())
+            dgw3_headers = []
+            if os.path.exists(self.path()):
+                with open(self.path(), 'rb') as f:
+                    lower_header = height - DGW_PAST_BLOCKS
+                    for height in range(height, lower_header-1, -1):
+                        f.seek(height*80)
+                        hd = f.read(80)
+                        if len(hd) < 80:
+                            raise Exception('Expected to read a full header.' 'This was only {} bytes'.format(len(hd)))
+                        dgw3_headers.append((height, bh2u(hd)))
+            cp.append((h, target, dgw3_headers))
         return cp
 
 
