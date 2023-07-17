@@ -60,8 +60,8 @@ You probably need to clear the cache: `rm -rf .buildozer/android/platform/build-
 ### How do I deploy on connected phone for quick testing?
 Assuming `adb` is installed:
 ```
-$ adb -d install -r dist/Electrum-LTC-*-arm64-v8a-debug.apk
-$ adb shell monkey -p org.electrum_ltc.electrum_ltc 1
+$ adb -d install -r dist/Electrum-FEC-*-arm64-v8a-debug.apk
+$ adb shell monkey -p org.electrum_fec.electrum_fec 1
 ```
 
 
@@ -86,7 +86,7 @@ adb logcat | grep python
 ```
 Better `grep` but fragile because of `cut`:
 ```
-adb logcat | grep -F "`adb shell ps | grep org.electrum_ltc.electrum_ltc | cut -c14-19`"
+adb logcat | grep -F "`adb shell ps | grep org.electrum_fec.electrum_fec | cut -c14-19`"
 ```
 
 
@@ -95,7 +95,7 @@ Install Kivy.
 
 Build atlas: `(cd contrib/android/; make theming)`
 
-Run electrum with the `-g` switch: `electrum-ltc -g kivy`
+Run electrum with the `-g` switch: `electrum-fec -g kivy`
 
 ### debug vs release build
 If you just follow the instructions above, you will build the apk
@@ -113,8 +113,8 @@ of Android does not let you access the internal storage of an app without root.
 (See [this](https://stackoverflow.com/q/9017073))
 ```
 $ adb shell
-$ run-as org.electrum_ltc.electrum_ltc ls /data/data/org.electrum_ltc.electrum_ltc/files/data
-$ run-as org.electrum_ltc.electrum_ltc cp /data/data/org.electrum_ltc.electrum_ltc/files/data/wallets/my_wallet /sdcard/some_path/my_wallet
+$ run-as org.electrum_fec.electrum_fec ls /data/data/org.electrum_fec.electrum_fec/files/data
+$ run-as org.electrum_fec.electrum_fec cp /data/data/org.electrum_fec.electrum_fec/files/data/wallets/my_wallet /sdcard/some_path/my_wallet
 ```
 
 Or use Android Studio: "Device File Explorer", which can download/upload data directly from device (via adb).
