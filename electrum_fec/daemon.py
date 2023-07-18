@@ -56,7 +56,7 @@ from . import GuiImportError
 from .plugin import run_hook
 
 if TYPE_CHECKING:
-    from electrum_ltc import gui
+    from electrum_fec import gui
 
 
 _logger = get_logger(__name__)
@@ -570,7 +570,7 @@ class Daemon(Logger):
         self.logger.info(f'launching GUI: {gui_name}')
         try:
             try:
-                gui = __import__('electrum_ltc.gui.' + gui_name, fromlist=['electrum_ltc'])
+                gui = __import__('electrum_fec.gui.' + gui_name, fromlist=['electrum_fec'])
             except GuiImportError as e:
                 sys.exit(str(e))
             self.gui_object = gui.ElectrumGui(config=config, daemon=self, plugins=plugins)
