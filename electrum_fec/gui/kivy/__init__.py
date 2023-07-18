@@ -29,7 +29,7 @@ import sys
 import os
 from typing import TYPE_CHECKING
 
-from electrum_ltc import GuiImportError
+from electrum_fec import GuiImportError
 
 KIVY_GUI_PATH = os.path.abspath(os.path.dirname(__file__))
 os.environ['KIVY_DATA_DIR'] = os.path.join(KIVY_GUI_PATH, 'data')
@@ -46,13 +46,13 @@ except ImportError as e:
 # minimum required version for kivy
 kivy.require('1.8.0')
 
-from electrum_ltc.logging import Logger
-from electrum_ltc.gui import BaseElectrumGui
+from electrum_fec.logging import Logger
+from electrum_fec.gui import BaseElectrumGui
 
 if TYPE_CHECKING:
-    from electrum_ltc.simple_config import SimpleConfig
-    from electrum_ltc.daemon import Daemon
-    from electrum_ltc.plugin import Plugins
+    from electrum_fec.simple_config import SimpleConfig
+    from electrum_fec.daemon import Daemon
+    from electrum_fec.plugin import Plugins
 
 
 class ElectrumGui(BaseElectrumGui, Logger):
