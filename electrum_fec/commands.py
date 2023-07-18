@@ -264,8 +264,8 @@ class Commands:
     @command('')
     async def restore(self, text, passphrase=None, password=None, encrypt_file=True, wallet_path=None):
         """Restore a wallet from text. Text can be a seed phrase, a master
-        public key, a master private key, a list of Litecoin addresses
-        or Litecoin private keys.
+        public key, a master private key, a list of Ferrite addresses
+        or Ferrite private keys.
         If you want to be prompted for an argument, type '?' or ':' (concealed)
         """
         # TODO create a separate command that blocks until wallet is synced
@@ -504,7 +504,7 @@ class Commands:
     @command('')
     async def dumpprivkeys(self):
         """Deprecated."""
-        return "This command is deprecated. Use a pipe instead: 'electrum-ltc listaddresses | electrum-ltc getprivatekeys - '"
+        return "This command is deprecated. Use a pipe instead: 'electrum-fec listaddresses | electrum-fec getprivatekeys - '"
 
     @command('')
     async def validateaddress(self, address):
@@ -561,8 +561,8 @@ class Commands:
     async def version_info(self):
         """Return information about dependencies, such as their version and path."""
         ret = {
-            "electrum_ltc.version": ELECTRUM_VERSION,
-            "electrum_ltc.path": os.path.dirname(os.path.realpath(__file__)),
+            "electrum_fec.version": ELECTRUM_VERSION,
+            "electrum_fec.path": os.path.dirname(os.path.realpath(__file__)),
         }
         # add currently running GUI
         if self.daemon and self.daemon.gui_object:
@@ -793,7 +793,7 @@ class Commands:
 
     @command('w')
     async def setlabel(self, key, label, wallet: Abstract_Wallet = None):
-        """Assign a label to an item. Item may be a litecoin address or a
+        """Assign a label to an item. Item may be a ferrite address or a
         transaction ID"""
         wallet.set_label(key, label)
 
@@ -1333,8 +1333,8 @@ def eval_bool(x: str) -> bool:
 
 param_descriptions = {
     'privkey': 'Private key. Type \'?\' to get a prompt.',
-    'destination': 'Litecoin address, contact or alias',
-    'address': 'Litecoin address',
+    'destination': 'Ferrite address, contact or alias',
+    'address': 'Ferrite address',
     'seed': 'Seed phrase',
     'txid': 'Transaction ID',
     'pos': 'Position',
@@ -1344,8 +1344,8 @@ param_descriptions = {
     'pubkey': 'Public key',
     'message': 'Clear text message. Use quotes if it contains spaces.',
     'encrypted': 'Encrypted message',
-    'amount': 'Amount to be sent (in LTC). Type \'!\' to send the maximum available.',
-    'requested_amount': 'Requested amount (in LTC).',
+    'amount': 'Amount to be sent (in FEC). Type \'!\' to send the maximum available.',
+    'requested_amount': 'Requested amount (in FEC).',
     'outputs': 'list of ["address", amount]',
     'redeem_script': 'redeem script (hexadecimal)',
     'lightning_amount': "Amount sent or received in a submarine swap. Set it to 'dryrun' to receive a value",
@@ -1365,7 +1365,7 @@ command_options = {
     'labels':      ("-l", "Show the labels of listed addresses"),
     'nocheck':     (None, "Do not verify aliases"),
     'imax':        (None, "Maximum number of inputs"),
-    'fee':         ("-f", "Transaction fee (absolute, in LTC)"),
+    'fee':         ("-f", "Transaction fee (absolute, in FEC)"),
     'feerate':     (None, "Transaction fee rate (in sat/byte)"),
     'from_addr':   ("-F", "Source address (must be a wallet address; use sweep to spend from non-wallet address)."),
     'from_coins':  (None, "Source coins (must be in wallet; use sweep to spend from non-wallet address)."),
@@ -1385,7 +1385,7 @@ command_options = {
     'timeout':     (None, "Timeout in seconds"),
     'force':       (None, "Create new address beyond gap limit, if no more addresses are available."),
     'pending':     (None, "Show only pending requests."),
-    'push_amount': (None, 'Push initial amount (in LTC)'),
+    'push_amount': (None, 'Push initial amount (in FEC)'),
     'expired':     (None, "Show only expired requests."),
     'paid':        (None, "Show only paid requests."),
     'show_addresses': (None, "Show input and output addresses"),
@@ -1435,10 +1435,10 @@ config_variables = {
     'addrequest': {
         'ssl_privkey': 'Path to your SSL private key, needed to sign the request.',
         'ssl_chain': 'Chain of SSL certificates, needed for signed requests. Put your certificate at the top and the root CA at the end',
-        'url_rewrite': 'Parameters passed to str.replace(), in order to create the r= part of litecoin: URIs. Example: \"(\'file:///var/www/\',\'https://electrum-ltc.org/\')\"',
+        'url_rewrite': 'Parameters passed to str.replace(), in order to create the r= part of ferrite: URIs. Example: \"(\'file:///var/www/\',\'https://electrum-fec.org/\')\"',
     },
     'listrequests':{
-        'url_rewrite': 'Parameters passed to str.replace(), in order to create the r= part of litecoin: URIs. Example: \"(\'file:///var/www/\',\'https://electrum-ltc.org/\')\"',
+        'url_rewrite': 'Parameters passed to str.replace(), in order to create the r= part of ferrite: URIs. Example: \"(\'file:///var/www/\',\'https://electrum-fec.org/\')\"',
     }
 }
 
@@ -1508,7 +1508,7 @@ def add_global_options(parser):
     group.add_argument("-v", dest="verbosity", help="Set verbosity (log levels)", default='')
     group.add_argument("-V", dest="verbosity_shortcuts", help="Set verbosity (shortcut-filter list)", default='')
     group.add_argument("-D", "--dir", dest="electrum_path", help="electrum directory")
-    group.add_argument("-P", "--portable", action="store_true", dest="portable", default=False, help="Use local 'electrum-ltc_data' directory")
+    group.add_argument("-P", "--portable", action="store_true", dest="portable", default=False, help="Use local 'electrum-fec_data' directory")
     group.add_argument("--testnet", action="store_true", dest="testnet", default=False, help="Use Testnet")
     group.add_argument("--regtest", action="store_true", dest="regtest", default=False, help="Use Regtest")
     group.add_argument("--simnet", action="store_true", dest="simnet", default=False, help="Use Simnet")
@@ -1524,14 +1524,14 @@ def add_wallet_option(parser):
 def get_parser():
     # create main parser
     parser = argparse.ArgumentParser(
-        epilog="Run 'electrum-ltc help <command>' to see the help for a command")
+        epilog="Run 'electrum-fec help <command>' to see the help for a command")
     parser.add_argument("--version", dest="cmd", action='store_const', const='version', help="Return the version of Electrum.")
     add_global_options(parser)
     add_wallet_option(parser)
     subparsers = parser.add_subparsers(dest='cmd', metavar='<command>')
     # gui
     parser_gui = subparsers.add_parser('gui', description="Run Electrum's Graphical User Interface.", help="Run GUI (default)")
-    parser_gui.add_argument("url", nargs='?', default=None, help="litecoin URI (or bip70 file)")
+    parser_gui.add_argument("url", nargs='?', default=None, help="ferrite URI (or bip70 file)")
     parser_gui.add_argument("-g", "--gui", dest="gui", help="select graphical user interface", choices=['qt', 'kivy', 'text', 'stdio', 'qml'])
     parser_gui.add_argument("-m", action="store_true", dest="hide_gui", default=False, help="hide GUI on startup")
     parser_gui.add_argument("-L", "--lang", dest="language", default=None, help="default language used in GUI")
