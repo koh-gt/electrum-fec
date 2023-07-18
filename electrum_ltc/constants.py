@@ -40,8 +40,8 @@ def read_json(filename, default):
     return r
 
 
-GIT_REPO_URL = "https://github.com/pooler/electrum-ltc"
-GIT_REPO_ISSUES_URL = "https://github.com/pooler/electrum-ltc/issues"
+GIT_REPO_URL = "https://github.com/koh-gt/electrum-fec"
+GIT_REPO_ISSUES_URL = "https://github.com/koh-gt/electrum-fec/issues"
 BIP39_WALLET_FORMATS = read_json('bip39_wallet_formats.json', [])
 
 
@@ -72,12 +72,12 @@ class BitcoinMainnet(AbstractNet):
 
     NET_NAME = "mainnet"
     TESTNET = False
-    WIF_PREFIX = 0x80
-    ADDRTYPE_P2PKH = 48
-    ADDRTYPE_P2SH = 50
-    SEGWIT_HRP = "ltc"
+    WIF_PREFIX = 0x80   # 0xB0
+    ADDRTYPE_P2PKH = 36
+    ADDRTYPE_P2SH = 35
+    SEGWIT_HRP = "fec"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2"
+    GENESIS = "46ca17415c18e43f5292034ebf9bbd10de80a61fc6dc17180e6609f33d3b48f3"
     DEFAULT_PORTS = {'t': '50001', 's': '50002'}
     DEFAULT_SERVERS = read_json('servers.json', {})
     CHECKPOINTS = read_json('checkpoints.json', [])
@@ -102,7 +102,7 @@ class BitcoinMainnet(AbstractNet):
     BIP44_COIN_TYPE = 2
     LN_REALM_BYTE = 0
     LN_DNS_SEEDS = [
-        'ltc.nodes.lightning.directory.',
+        #'fec.nodes.lightning.directory.',
     ]
 
 
@@ -112,10 +112,10 @@ class BitcoinTestnet(AbstractNet):
     TESTNET = True
     WIF_PREFIX = 0xbf
     ADDRTYPE_P2PKH = 111
-    ADDRTYPE_P2SH = 58
-    SEGWIT_HRP = "tltc"
+    ADDRTYPE_P2SH = 35
+    SEGWIT_HRP = "tfec"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "4966625a4b2851d9fdee139e56211a0d88575f59ed816ff5e6a63deb4e3e29a0"
+    GENESIS = "7a9f43d6e86eefa66e2b79918b2235c9362106f3d9f11f37f7a33450ceae73c1"
     DEFAULT_PORTS = {'t': '51001', 's': '51002'}
     DEFAULT_SERVERS = read_json('servers_testnet.json', {})
     CHECKPOINTS = read_json('checkpoints_testnet.json', [])
@@ -147,9 +147,9 @@ class BitcoinTestnet(AbstractNet):
 class BitcoinRegtest(BitcoinTestnet):
 
     NET_NAME = "regtest"
-    SEGWIT_HRP = "rltc"
+    SEGWIT_HRP = "rfec"
     BOLT11_HRP = SEGWIT_HRP
-    GENESIS = "530827f38f93b43ed12af0b3ad25a288dc02ed74d6d7857862df51fc56c416f9"
+    GENESIS = "492258df125bae6c6f95eed66a5d6d8be785bcb7d10da025226b57a5c0e42837"
     DEFAULT_SERVERS = read_json('servers_regtest.json', {})
     CHECKPOINTS = []
     LN_DNS_SEEDS = []
