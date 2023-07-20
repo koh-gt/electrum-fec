@@ -9,24 +9,24 @@ import threading
 import asyncio
 from typing import TYPE_CHECKING, Optional, Union, Callable, Sequence
 
-from electrum_ltc.storage import WalletStorage, StorageReadWriteError
-from electrum_ltc.wallet_db import WalletDB
-from electrum_ltc.wallet import Wallet, InternalAddressCorruption, Abstract_Wallet
+from electrum_fec.storage import WalletStorage, StorageReadWriteError
+from electrum_fec.wallet_db import WalletDB
+from electrum_fec.wallet import Wallet, InternalAddressCorruption, Abstract_Wallet
 
-from electrum_ltc.plugin import run_hook
-from electrum_ltc import util
-from electrum_ltc.util import (profiler, InvalidPassword, send_exception_to_crash_reporter,
+from electrum_fec.plugin import run_hook
+from electrum_fec import util
+from electrum_fec.util import (profiler, InvalidPassword, send_exception_to_crash_reporter,
                                format_satoshis, format_satoshis_plain, format_fee_satoshis,
                                parse_max_spend)
-from electrum_ltc.util import EventListener, event_listener
-from electrum_ltc.invoices import PR_PAID, PR_FAILED, Invoice
-from electrum_ltc import blockchain
-from electrum_ltc.network import Network, TxBroadcastError, BestEffortRequestFailed
-from electrum_ltc.interface import PREFERRED_NETWORK_PROTOCOL, ServerAddr
-from electrum_ltc.logging import Logger
-from electrum_ltc.bitcoin import COIN
+from electrum_fec.util import EventListener, event_listener
+from electrum_fec.invoices import PR_PAID, PR_FAILED, Invoice
+from electrum_fec import blockchain
+from electrum_fec.network import Network, TxBroadcastError, BestEffortRequestFailed
+from electrum_fec.interface import PREFERRED_NETWORK_PROTOCOL, ServerAddr
+from electrum_fec.logging import Logger
+from electrum_fec.bitcoin import COIN
 
-from electrum_ltc.gui import messages
+from electrum_fec.gui import messages
 from .i18n import _
 from .util import get_default_language
 from . import KIVY_GUI_PATH
@@ -45,10 +45,10 @@ from .uix.dialogs.password_dialog import OpenWalletDialog, ChangePasswordDialog,
 from .uix.dialogs.choice_dialog import ChoiceDialog
 
 ## lazy imports for factory so that widgets can be used in kv
-#Factory.register('InstallWizard', module='electrum_ltc.gui.kivy.uix.dialogs.installwizard')
-#Factory.register('InfoBubble', module='electrum_ltc.gui.kivy.uix.dialogs')
-#Factory.register('OutputList', module='electrum_ltc.gui.kivy.uix.dialogs')
-#Factory.register('OutputItem', module='electrum_ltc.gui.kivy.uix.dialogs')
+#Factory.register('InstallWizard', module='electrum_fec.gui.kivy.uix.dialogs.installwizard')
+#Factory.register('InfoBubble', module='electrum_fec.gui.kivy.uix.dialogs')
+#Factory.register('OutputList', module='electrum_fec.gui.kivy.uix.dialogs')
+#Factory.register('OutputItem', module='electrum_fec.gui.kivy.uix.dialogs')
 
 from .uix.dialogs.installwizard import InstallWizard
 from .uix.dialogs import InfoBubble, crash_reporter
@@ -64,14 +64,14 @@ notification = app = ref = None
 
 # register widget cache for keeping memory down timeout to forever to cache
 # the data
-Cache.register('electrum_ltc_widgets', timeout=0)
+Cache.register('electrum_fec_widgets', timeout=0)
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.uix.label import Label
 from kivy.core.clipboard import Clipboard
 
-Factory.register('TabbedCarousel', module='electrum_ltc.gui.kivy.uix.screens')
+Factory.register('TabbedCarousel', module='electrum_fec.gui.kivy.uix.screens')
 
 # Register fonts without this you won't be able to use bold/italic...
 # inside markup.
@@ -85,7 +85,7 @@ Label.register(
 )
 
 
-from electrum_ltc.util import (NoDynamicFeeEstimates, NotEnoughFunds,
+from electrum_fec.util import (NoDynamicFeeEstimates, NotEnoughFunds,
                                BITCOIN_BIP21_URI_SCHEME, LIGHTNING_URI_SCHEME,
                                UserFacingException)
 
@@ -94,9 +94,9 @@ from .uix.dialogs.lightning_channels import LightningChannelsDialog, SwapDialog
 
 if TYPE_CHECKING:
     from . import ElectrumGui
-    from electrum_ltc.simple_config import SimpleConfig
-    from electrum_ltc.plugin import Plugins
-    from electrum_ltc.paymentrequest import PaymentRequest
+    from electrum_fec.simple_config import SimpleConfig
+    from electrum_fec.plugin import Plugins
+    from electrum_fec.paymentrequest import PaymentRequest
 
 
 class ElectrumWindow(App, Logger, EventListener):
@@ -489,7 +489,7 @@ class ElectrumWindow(App, Logger, EventListener):
             self.import_channel_backup(data)
             return
         # try to decode as transaction
-        from electrum_ltc.transaction import tx_from_any
+        from electrum_fec.transaction import tx_from_any
         try:
             tx = tx_from_any(data)
         except:
@@ -572,7 +572,7 @@ class ElectrumWindow(App, Logger, EventListener):
         PythonActivity.mActivity.startActivityForResult(intent, 0)
 
     def scan_qr_non_android(self, on_complete):
-        from electrum_ltc import qrscanner
+        from electrum_fec import qrscanner
         try:
             video_dev = self.electrum_config.get_video_device()
             data = qrscanner.scan_barcode(video_dev)
@@ -861,13 +861,13 @@ class ElectrumWindow(App, Logger, EventListener):
 
         #setup lazy imports for mainscreen
         Factory.register('AnimatedPopup',
-                         module='electrum_ltc.gui.kivy.uix.dialogs')
+                         module='electrum_fec.gui.kivy.uix.dialogs')
         Factory.register('QRCodeWidget',
-                         module='electrum_ltc.gui.kivy.uix.qrcodewidget')
+                         module='electrum_fec.gui.kivy.uix.qrcodewidget')
 
         # preload widgets. Remove this if you want to load the widgets on demand
-        #Cache.append('electrum_ltc_widgets', 'AnimatedPopup', Factory.AnimatedPopup())
-        #Cache.append('electrum_ltc_widgets', 'QRCodeWidget', Factory.QRCodeWidget())
+        #Cache.append('electrum_fec_widgets', 'AnimatedPopup', Factory.AnimatedPopup())
+        #Cache.append('electrum_fec_widgets', 'QRCodeWidget', Factory.QRCodeWidget())
 
         # load and focus the ui
         self.root.manager = self.root.ids['manager']
@@ -875,7 +875,7 @@ class ElectrumWindow(App, Logger, EventListener):
         self.history_screen = None
         self.send_screen = None
         self.receive_screen = None
-        self.icon = os.path.dirname(KIVY_GUI_PATH) + "/icons/electrum-ltc.png"
+        self.icon = os.path.dirname(KIVY_GUI_PATH) + "/icons/electrum-fec.png"
         self.tabs = self.root.ids['tabs']
 
     def update_interfaces(self, dt):
@@ -991,7 +991,7 @@ class ElectrumWindow(App, Logger, EventListener):
             self._trigger_update_status()
 
     def get_max_amount(self):
-        from electrum_ltc.transaction import PartialTxOutput
+        from electrum_fec.transaction import PartialTxOutput
         if run_hook('abort_send', self):
             return ''
         inputs = self.wallet.get_spendable_coins(None)
@@ -1056,8 +1056,8 @@ class ElectrumWindow(App, Logger, EventListener):
                 from plyer import notification
             icon = (os.path.dirname(os.path.realpath(__file__))
                     + '/../../' + self.icon)
-            notification.notify('Electrum-LTC', message,
-                            app_icon=icon, app_name='Electrum-LTC')
+            notification.notify('Electrum-FEC', message,
+                            app_icon=icon, app_name='Electrum-FEC')
         except ImportError:
             self.logger.Error('Notification: needs plyer; `sudo python3 -m pip install plyer`')
 
