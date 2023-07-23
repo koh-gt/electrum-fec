@@ -10,7 +10,7 @@ set -e
 PROJECT_ROOT="$(dirname "$(readlink -e "$0")")/.."
 
 if [ -z "$SSHUSER" ]; then
-    SSHUSER=pooler
+    SSHUSER=koh-gt
 fi
 
 cd "$PROJECT_ROOT"
