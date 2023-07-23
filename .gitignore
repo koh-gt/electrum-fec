@@ -5,8 +5,8 @@
 build/
 dist/
 *.egg/
-Electrum_LTC.egg-info/
-electrum_ltc/locale/
+Electrum_FEC.egg-info/
+electrum_fec/locale/
 .devlocaltmp/
 *_trial_temp
 packages
@@ -19,7 +19,7 @@ bin/
 .idea
 .mypy_cache
 .vscode
-electrum-ltc_data
+electrum-fec_data
 .DS_Store
 
 # tests/tox
@@ -49,8 +49,8 @@ contrib/libusb/
 contrib/.venv_make_packages/
 
 # shared objects
-electrum_ltc/*.so
-electrum_ltc/*.so.0
-electrum_ltc/*.dll
-electrum_ltc/*.dylib
+electrum_fec/*.so
+electrum_fec/*.so.0
+electrum_fec/*.dll
+electrum_fec/*.dylib
 contrib/osx/*.dylib

@@ -10,7 +10,7 @@ for i, x in enumerate(sys.argv):
 else:
     raise Exception('no name')
 
-home = 'C:\\electrum-ltc\\'
+home = 'C:\\electrum-fec\\'
 
 # see https://github.com/pyinstaller/pyinstaller/issues/2005
 hiddenimports = []
@@ -22,8 +22,8 @@ hiddenimports += collect_submodules('keepkeylib')
 hiddenimports += collect_submodules('websocket')
 hiddenimports += collect_submodules('ckcc')
 hiddenimports += collect_submodules('bitbox02')
-hiddenimports += ['electrum_ltc.plugins.jade.jade']
-hiddenimports += ['electrum_ltc.plugins.jade.jadepy.jade']
+hiddenimports += ['electrum_fec.plugins.jade.jade']
+hiddenimports += ['electrum_fec.plugins.jade.jadepy.jade']
 hiddenimports += ['_scrypt', 'PyQt5.QtPrintSupport']  # needed by Revealer
 
 
@@ -37,13 +37,13 @@ binaries += [('C:/tmp/libusb-1.0.dll', '.')]
 binaries += [('C:/tmp/libzbar-0.dll', '.')]
 
 datas = [
-    (home+'electrum_ltc/*.json', 'electrum_ltc'),
-    (home+'electrum_ltc/lnwire/*.csv', 'electrum_ltc/lnwire'),
-    (home+'electrum_ltc/wordlist/english.txt', 'electrum_ltc/wordlist'),
-    (home+'electrum_ltc/wordlist/slip39.txt', 'electrum_ltc/wordlist'),
-    (home+'electrum_ltc/locale', 'electrum_ltc/locale'),
-    (home+'electrum_ltc/plugins', 'electrum_ltc/plugins'),
-    (home+'electrum_ltc/gui/icons', 'electrum_ltc/gui/icons'),
+    (home+'electrum_fec/*.json', 'electrum_fec'),
+    (home+'electrum_fec/lnwire/*.csv', 'electrum_fec/lnwire'),
+    (home+'electrum_fec/wordlist/english.txt', 'electrum_fec/wordlist'),
+    (home+'electrum_fec/wordlist/slip39.txt', 'electrum_fec/wordlist'),
+    (home+'electrum_fec/locale', 'electrum_fec/locale'),
+    (home+'electrum_fec/plugins', 'electrum_fec/plugins'),
+    (home+'electrum_fec/gui/icons', 'electrum_fec/gui/icons'),
 ]
 datas += collect_data_files('trezorlib')
 datas += collect_data_files('safetlib')
@@ -54,24 +54,24 @@ datas += collect_data_files('bitbox02')
 
 # We don't put these files in to actually include them in the script but to make the Analysis method scan them for imports
 a = Analysis([home+'run_electrum',
-              home+'electrum_ltc/gui/qt/main_window.py',
-              home+'electrum_ltc/gui/qt/qrreader/qtmultimedia/camera_dialog.py',
-              home+'electrum_ltc/gui/text.py',
-              home+'electrum_ltc/util.py',
-              home+'electrum_ltc/wallet.py',
-              home+'electrum_ltc/simple_config.py',
-              home+'electrum_ltc/bitcoin.py',
-              home+'electrum_ltc/blockchain.py',
-              home+'electrum_ltc/dnssec.py',
-              home+'electrum_ltc/commands.py',
-              home+'electrum_ltc/plugins/cosigner_pool/qt.py',
-              home+'electrum_ltc/plugins/trezor/qt.py',
-              home+'electrum_ltc/plugins/safe_t/client.py',
-              home+'electrum_ltc/plugins/safe_t/qt.py',
-              home+'electrum_ltc/plugins/keepkey/qt.py',
-              home+'electrum_ltc/plugins/ledger/qt.py',
-              home+'electrum_ltc/plugins/coldcard/qt.py',
-              home+'electrum_ltc/plugins/jade/qt.py',
+              home+'electrum_fec/gui/qt/main_window.py',
+              home+'electrum_fec/gui/qt/qrreader/qtmultimedia/camera_dialog.py',
+              home+'electrum_fec/gui/text.py',
+              home+'electrum_fec/util.py',
+              home+'electrum_fec/wallet.py',
+              home+'electrum_fec/simple_config.py',
+              home+'electrum_fec/bitcoin.py',
+              home+'electrum_fec/blockchain.py',
+              home+'electrum_fec/dnssec.py',
+              home+'electrum_fec/commands.py',
+              home+'electrum_fec/plugins/cosigner_pool/qt.py',
+              home+'electrum_fec/plugins/trezor/qt.py',
+              home+'electrum_fec/plugins/safe_t/client.py',
+              home+'electrum_fec/plugins/safe_t/qt.py',
+              home+'electrum_fec/plugins/keepkey/qt.py',
+              home+'electrum_fec/plugins/ledger/qt.py',
+              home+'electrum_fec/plugins/coldcard/qt.py',
+              home+'electrum_fec/plugins/jade/qt.py',
               #home+'packages/requests/utils.py'
               ],
              binaries=binaries,
@@ -127,11 +127,11 @@ exe_standalone = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    name=os.path.join('build\\pyi.win32\\electrum-ltc', cmdline_name + ".exe"),
+    name=os.path.join('build\\pyi.win32\\electrum-fec', cmdline_name + ".exe"),
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'electrum_ltc/gui/icons/electrum.ico',
+    icon=home+'electrum_fec/gui/icons/electrum.ico',
     console=False)
     # console=True makes an annoying black box pop up, but it does make Electrum output command line commands, with this turned off no output will be given but commands can still be used
 
@@ -140,11 +140,11 @@ exe_portable = EXE(
     a.scripts,
     a.binaries,
     a.datas + [('is_portable', 'README.md', 'DATA')],
-    name=os.path.join('build\\pyi.win32\\electrum-ltc', cmdline_name + "-portable.exe"),
+    name=os.path.join('build\\pyi.win32\\electrum-fec', cmdline_name + "-portable.exe"),
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'electrum_ltc/gui/icons/electrum.ico',
+    icon=home+'electrum_fec/gui/icons/electrum.ico',
     console=False)
 
 #####
@@ -154,22 +154,22 @@ exe_inside_setup_noconsole = EXE(
     pyz,
     a.scripts,
     exclude_binaries=True,
-    name=os.path.join('build\\pyi.win32\\electrum-ltc', cmdline_name),
+    name=os.path.join('build\\pyi.win32\\electrum-fec', cmdline_name),
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'electrum_ltc/gui/icons/electrum.ico',
+    icon=home+'electrum_fec/gui/icons/electrum.ico',
     console=False)
 
 exe_inside_setup_console = EXE(
     pyz,
     a.scripts,
     exclude_binaries=True,
-    name=os.path.join('build\\pyi.win32\\electrum-ltc', cmdline_name+"-debug"),
+    name=os.path.join('build\\pyi.win32\\electrum-fec', cmdline_name+"-debug"),
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'electrum_ltc/gui/icons/electrum.ico',
+    icon=home+'electrum_fec/gui/icons/electrum.ico',
     console=True)
 
 coll = COLLECT(
@@ -181,6 +181,6 @@ coll = COLLECT(
     strip=None,
     upx=True,
     debug=False,
-    icon=home+'electrum_ltc/gui/icons/electrum.ico',
+    icon=home+'electrum_fec/gui/icons/electrum.ico',
     console=False,
-    name=os.path.join('dist', 'electrum-ltc'))
+    name=os.path.join('dist', 'electrum-fec'))

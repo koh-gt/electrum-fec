@@ -10,8 +10,8 @@
 
 ### 1. Check out the code from GitHub:
 ```
-$ git clone https://github.com/pooler/electrum-ltc.git
-$ cd electrum-ltc
+$ git clone https://github.com/pooler/electrum-fec.git
+$ cd electrum-fec
 $ git submodule update --init
 ```
 
