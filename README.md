@@ -5,7 +5,7 @@ Licence: MIT Licence
 Author: Thomas Voegtlin
 Port Maintainer: Pooler
 Language: Python (>= 3.8)
-Homepage: https://electrum-fec.org/
+Homepage: https://ferritecoin.org/
 ```
 
 
@@ -139,9 +139,4 @@ Any help testing the software, reporting or fixing bugs, reviewing pull requests
 and recent changes, writing tests, or helping with outstanding issues is very welcome.
 Implementing new features, or improving/refactoring the codebase, is of course
 also welcome, but to avoid wasted effort, especially for larger changes,
-we encourage discussing these on the issue tracker or IRC first.
-
-Besides [GitHub](https://github.com/pooler/electrum-fec),
-most communication about Electrum-FEC development happens on IRC, in the
-`#electrum-fec` channel on Libera Chat. The easiest way to participate on IRC is
-with the web client, [web.libera.chat](https://web.libera.chat/#electrum-fec).
+we encourage discussing these on the issue tracker first.

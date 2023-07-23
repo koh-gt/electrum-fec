@@ -6,7 +6,7 @@ set -e
 PYTHON_VERSION=3.9.13
 PY_VER_MAJOR="3.9"  # as it appears in fs paths
 PACKAGE=Electrum-FEC
-GIT_REPO=https://github.com/pooler/electrum-fec
+GIT_REPO=https://github.com/koh-gt/electrum-fec
 
 export GCC_STRIP_BINARIES="1"
 export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ folders with .pyc files

@@ -9,7 +9,7 @@
 
 ### 1. Check out the code from GitHub:
 ```
-> git clone https://github.com/pooler/electrum-fec.git
+> git clone https://github.com/koh-gt/electrum-fec.git
 > cd electrum-fec
 > git submodule update --init
 ```
