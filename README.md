@@ -1,5 +1,8 @@
 # Electrum-FEC - Lightweight Ferrite client
 
+Common distutils error - Python  
+`sudo apt install python-distutils-extra`
+
 ```
 Licence: MIT Licence
 Author: Thomas Voegtlin
