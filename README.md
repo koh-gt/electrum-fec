@@ -1,5 +1,30 @@
 # Electrum-FEC - Lightweight Ferrite client
 
+## Build guide
+``` bash
+git clone https://github.com/koh-gt/electrum-fec
+sudo chmod +x -R electrum-fec
+
+# Linux
+cd electrum-fec/contrib/build-linux/appimage
+./build.sh
+
+# Windows
+sudo apt-get install -y upx
+cd electrum-fec/contrib/build-wine
+./build.sh
+
+# Android (Incomplete)
+cd electrum-fec/contrib/android
+## ARM 64-bit
+./build.sh kivy arm64-v8a release-unsigned
+## x86 Android
+./build.sh kivy x86 release-unsigned
+## Legacy Android
+./build.sh kivy armeabi-v7a release-unsigned
+
+```
+
 Common distutils error - Python  
 `sudo apt install python-distutils-extra`
 
