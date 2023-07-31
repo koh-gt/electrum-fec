@@ -2,6 +2,9 @@
 
 ## Build guide
 ``` bash
+# You will need Docker -
+sudo snap install docker
+
 git clone https://github.com/koh-gt/electrum-fec
 sudo chmod +x -R electrum-fec
 
@@ -26,7 +29,7 @@ cd electrum-fec/contrib/android
 ```
 
 Common distutils error - Python  
-`sudo apt install python-distutils-extra`
+`sudo apt install python3-distutils-extra`
 
 ```
 Licence: MIT Licence
@@ -47,15 +50,10 @@ but not everything. The following sections describe how to run from source, but 
 is a TL;DR:
 
 ```
+$ sudo apt install python3-pip
 $ sudo apt-get install libsecp256k1-0
 $ python3 -m pip install --user ".[gui,crypto]"
-```
-
-### Not pure-python dependencies
-
-If you want to use the Qt interface, install the Qt dependencies:
-```
-$ sudo apt-get install python3-pyqt5
+$ sudo apt-get install python3-pyqt5  # Not pure python - If you want to use the Qt interface, install the Qt dependencies
 ```
 
 For elliptic curve operations,
