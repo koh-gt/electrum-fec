@@ -17,11 +17,11 @@ cd electrum-fec/contrib/build-wine
 # Android (Incomplete)
 cd electrum-fec/contrib/android
 ## ARM 64-bit
-./build.sh kivy arm64-v8a release-unsigned
+./build.sh qml arm64-v8a release-unsigned
 ## x86 Android
-./build.sh kivy x86 release-unsigned
+./build.sh qml x86 release-unsigned
 ## Legacy Android
-./build.sh kivy armeabi-v7a release-unsigned
+./build.sh qml arm64-v8a release-unsigned
 
 ```
 
