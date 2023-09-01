@@ -1,5 +1,13 @@
 # Electrum-FEC - Lightweight Ferrite client
 
+> Ferrite lightweight wallet based on Electrum-LTC and Electrum codebase.<br>
+
+### <a href="https://github.com/koh-gt/electrum-fec/releases/tag/v1.0.0" target="_blank"><img width=512 src="https://github.com/koh-gt/ferrite-core/assets/101822992/e0a14905-5779-437b-b936-30fa7361342c" /></a>
+
+## Community group links
+| [![telegram-logo](https://raw.githubusercontent.com/gauravghongde/social-icons/9d939e1c5b7ea4a24ac39c3e4631970c0aa1b920/SVG/Color/Telegram.svg)](https://t.me/ferrite_core) [Ferrite Core ](https://t.me/ferrite_core) | [![reddit-logo](https://raw.githubusercontent.com/gauravghongde/social-icons/9d939e1c5b7ea4a24ac39c3e4631970c0aa1b920/SVG/Color/Reddit.svg)](https://www.reddit.com/r/Ferritecoin) [r/Ferritecoin](https://www.reddit.com/r/Ferritecoin) | [![discord-logo](https://raw.githubusercontent.com/gauravghongde/social-icons/9d939e1c5b7ea4a24ac39c3e4631970c0aa1b920/SVG/Color/Discord.svg)](https://discord.gg/qKgF5xhS5p) [Discord](https://discord.gg/qKgF5xhS5p) | [![twitter-logo](https://raw.githubusercontent.com/gauravghongde/social-icons/9d939e1c5b7ea4a24ac39c3e4631970c0aa1b920/SVG/Color/Twitter.svg)](https://twitter.com/ferritecoin) [Twitter](https://twitter.com/ferritecoin) |
+|--|--|--|--|
+
 ## Build guide
 ``` bash
 # You will need Docker -
@@ -36,8 +44,9 @@ Licence: MIT Licence
 Author: Thomas Voegtlin
 Port Maintainer: Pooler
 Language: Python (>= 3.8)
-Homepage: https://ferritecoin.org/
 ```
+
+![electrumb_370](https://github.com/koh-gt/electrum-fec/assets/101822992/9b595953-41ce-46ae-b763-7e98f5c8c846)
 
 
 ## Getting started
